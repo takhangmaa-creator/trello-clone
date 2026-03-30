@@ -1,0 +1,32 @@
+import { useDrag } from "react-dnd";
+import { useAppState } from "./AppStateContext";
+import { DragItem } from "./DragItem";
+import { useEffect } from "react";
+import { getEmptyImage } from "react-dnd-html5-backend";
+
+export const useItemDrag = (item: DragItem) => {
+  const { dispatch } = useAppState();
+  const [{ isDragging }, drag, preview] = useDrag({
+    type: "ITEM",
+    item: () => {
+      dispatch({
+        type: "SET_DRAGGED_ITEM",
+        payload: item,
+      });
+      return item;
+    },
+    end: () => {
+      dispatch({
+        type: "SET_DRAGGED_ITEM",
+        payload: undefined,
+      });
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+  return { drag, isDragging };
+};
