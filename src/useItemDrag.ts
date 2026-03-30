@@ -7,7 +7,7 @@ import { getEmptyImage } from "react-dnd-html5-backend";
 export const useItemDrag = (item: DragItem) => {
   const { dispatch } = useAppState();
   const [{ isDragging }, drag, preview] = useDrag({
-    type: "ITEM",
+    type: item.type,
     item: () => {
       dispatch({
         type: "SET_DRAGGED_ITEM",

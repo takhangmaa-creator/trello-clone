@@ -1,7 +1,8 @@
-import { createContext, useContext, useReducer } from "react";
+import { act, createContext, useContext, useReducer } from "react";
 import { findItemIndexById } from "./utils/findItemIndexById";
 import { moveItem } from "./moveItem";
 import { DragItem } from "./DragItem";
+import { stat } from "fs";
 
 const appData: AppState = {
   draggedItem: undefined,
@@ -78,6 +79,15 @@ type Action =
   | {
       type: "SET_DRAGGED_ITEM";
       payload: DragItem | undefined;
+    }
+  | {
+      type: "MOVE_TASK";
+      payload: {
+        dragIndex: number;
+        hoverIndex: number;
+        sourceColumn: string;
+        targetColumn: string;
+      };
     };
 
 //TODO: need to define appStateReducer
@@ -118,6 +128,17 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
     case "SET_DRAGGED_ITEM": {
       return { ...state, draggedItem: action.payload };
     }
+
+    case "MOVE_TASK": {
+      const { dragIndex, hoverIndex, sourceColumn, targetColumn } =
+        action.payload;
+      const sourceLaneIndex = findItemIndexById(state.lists, sourceColumn);
+      const targetLaneIndex = findItemIndexById(state.lists, targetColumn);
+      const item = state.lists[sourceLaneIndex].tasks.splice(dragIndex, 1)[0];
+      state.lists[targetLaneIndex].tasks.splice(hoverIndex, 0, item);
+      return { ...state };
+    }
+
     default: {
       return state;
     }

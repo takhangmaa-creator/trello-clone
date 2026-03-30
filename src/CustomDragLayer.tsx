@@ -12,7 +12,7 @@ export const CustomDragLayer: React.FC = () => {
   return isDragging ? (
     <CustomDragLayerContainer>
       <div style={getItemStyles(currentOffSet)}>
-        <Column id={item.id} text={item.text} index={item.index}></Column>
+        <Column id={item.id} text={item.text} index={item.index} isPreview></Column>
       </div>
     </CustomDragLayerContainer>
   ) : null;
